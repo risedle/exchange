@@ -10,6 +10,8 @@ import { ZeroExOptimized } from "base/ZeroExOptimized.sol";
  *         deployed features.
  */
 contract RisedleExchange is ZeroExOptimized {
-    constructor(address bootstrapper) ZeroExOptimized(bootstrapper) public {}
+    constructor(address bootstrapper)
+        public
+        ZeroExOptimized(bootstrapper) {}
 }
 
