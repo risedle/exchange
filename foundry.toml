@@ -4,5 +4,6 @@ out = "out"
 libs = ["lib"]
 remappings = [
     "base/=lib/protocol/contracts/zero-ex/contracts/src",
-    "@0x/contracts-utils/=lib/protocol/contracts/utils"
+    "@0x/contracts-utils/=lib/protocol/contracts/utils",
+    "@0x/contracts-erc20/=lib/protocol/contracts/erc20"
 ]
