@@ -16,6 +16,4 @@ The technical documentation is available [here][doc].
 | Contract | Address | Etherscan |
 |----------|---------|-----------|
 | SimpleFunctionRegistry | `0x7ABFab640C837a4fa32FDBf0cb4f65d8A62eD45A` | [link](https://arbiscan.io/address/0x7abfab640c837a4fa32fdbf0cb4f65d8a62ed45a#code) |
-|          |         |           |
-|          |         |           |
 
