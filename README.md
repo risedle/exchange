@@ -20,3 +20,4 @@ The technical documentation is available [here][doc].
 | SimpleFunctionRegistry | `0x7ABFab640C837a4fa32FDBf0cb4f65d8A62eD45A` | [link](https://arbiscan.io/address/0x7abfab640c837a4fa32fdbf0cb4f65d8a62ed45a) |
 | Ownable | `0xb6F2503C9a5f6DFE8f493368c67AF6c7CEbE7FD2` | [link](https://arbiscan.io/address/0xb6f2503c9a5f6dfe8f493368c67af6c7cebe7fd2) |
 | TransformERC20 | `0xCcED4613da58CACE9d3FED70F2D34d91B3a4266A` | [link](https://arbiscan.io/address/0xcced4613da58cace9d3fed70f2d34d91b3a4266a) |
+| MetaTransactions | `0x3AB1a7185c9C357cF3AF5a836AA398F8dE89D87c` | [link](https://arbiscan.io/address/0x3ab1a7185c9c357cf3af5a836aa398f8de89d87c) |
