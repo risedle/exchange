@@ -22,3 +22,4 @@ The technical documentation is available [here][doc].
 | TransformERC20 | `0xCcED4613da58CACE9d3FED70F2D34d91B3a4266A` | [link](https://arbiscan.io/address/0xcced4613da58cace9d3fed70f2d34d91b3a4266a) |
 | MetaTransactions | `0x3AB1a7185c9C357cF3AF5a836AA398F8dE89D87c` | [link](https://arbiscan.io/address/0x3ab1a7185c9c357cf3af5a836aa398f8de89d87c) |
 | NativeOrders | `0x0847811214c8856F5972771D238D355bFb805e86` | [link](https://arbiscan.io/address/0x0847811214c8856f5972771d238d355bfb805e86) |
+| OTCOrders | `0xCd01C047B04DdA3f0AcEA4CEf6e4269aB0fD6b7A` | [link](https://arbiscan.io/address/0xCd01C047B04DdA3f0AcEA4CEf6e4269aB0fD6b7A) |
