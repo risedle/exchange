@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
+import { Owned } from "solmate/auth/owned.sol";
+import { WETH } from "solmate/tokens/WETH.sol";
+
 /**
  * @title Risedle Exchange Proxy
  * @author bayu <bayu@risedle.com> <https://github.com/pyk>
  *
- * Risedle Exchange Proxy settles the trade order onchain.
+ * Risedle Exchange Proxy settles the trade order on-chain.
  *
  * ┌────────┐   ┌───────────────────┐   ┌───────────────────┐   ┌─────┐
  * │ sender ├──►│   bytes[] data    ├──►│  Risedle Exchange ├──►│ DEX │
@@ -13,7 +16,6 @@ pragma solidity ^0.8.0;
  *      ▲       │ wrap()            │   │ settle(data)      │      │
  *      │       │ swapViaUniswapV2()│   └───────────────────┘      │
  *      │       │ swapViaCurve()    │                              │
- *      │       │ checkSlippage()   │                              │
  *      │       └───────────────────┘                              │
  *      │                                                          │
  *      └──────────────────────────────────────────────────────────┘
@@ -26,10 +28,86 @@ pragma solidity ^0.8.0;
  *
  * The owner of this contract can upgrade the feature via `register` function.
  */
-contract RisedleExchangeProxy {
+contract RisedleExchangeProxy is Owned {
 
-    constructor(address owner) {
-        _transferOwnership(owner);
+    /// ███ Storages █████████████████████████████████████████████████████████
+
+    /// @notice Map feature function selector to its implementation
+    map(bytes4 => address) public registry;
+
+    /// @notice WETH address
+    WETH public immutable weth;
+
+
+    /// ███ Events ███████████████████████████████████████████████████████████
+
+    /// @notice Event emitted when proxy function registered
+    event ProxyFunctionUpdated(bytes4 selector, address previous, address new);
+
+
+    /// ███ Errors ███████████████████████████████████████████████████████████
+
+    /// @notice Error raised if function implementation is invalid
+    error InvalidImplementation();
+
+    /// @notice Error raised if batch input is invalid
+    error InvalidRegisterInputs();
+
+    /// @notice Error raised if function is not implemented
+    error FunctionNotImplemented(bytes4 selector);
+
+
+    /// ███ Constructor ██████████████████████████████████████████████████████
+
+    constructor(address _owner, WETH _weth) Owned(_owner) {
+        weth = _weth;
     }
+
+
+    /// ███ Registry █████████████████████████████████████████████████████████
+
+    /// @notice Register or replace a function
+    /// @param _selector The function selector
+    /// @param _impl The implementation address
+    function register(bytes4 _selector, address _impl) public onlyOwner {
+        if (_impl == address(0)) revert InvalidImplementation();
+        address prev = registry[_selector];
+        registry[_selector] = _impl;
+        emit ProxyFunctionUpdated(selector, prev, _impl);
+    }
+
+
+    /// @notice Batch register
+    /// @param _selectors The array of function selectors
+    /// @param _impls The array of implementation address
+    function register(bytes4[] _selectos, address[] _impls) external {
+        if (_selectors.lenth != _impls.length) revert InvalidRegisterInputs();
+        for (uint256 i = 0; i < _selector.length; i++) {
+            register(_selectors[i], _impls[i]);
+        }
+    }
+
+
+    /// ███ Proxy ████████████████████████████████████████████████████████████
+
+    /// @notice Forward call to the implementation contract
+    fallback() external payable {
+        bytes4 selector = msg.data.readBytes4(0);
+        address impl = registry[selector];
+        if (impl == address(0)) revert FunctionNotImplemented(selector);
+        (bool success, bytes memory data) = impl.delegateCall(msg.data);
+        if (!success) {
+            assembly { revert(add(data, 32), mload(data)) }
+        }
+        assembly { return(add(data, 32), mload(data)) }
+    }
+
+
+    /// ███ Order settlements  ███████████████████████████████████████████████
+
+    /// @notice
+
+
+
 }
 
