@@ -4,3 +4,6 @@
 [submodule "lib/protocol"]
 	path = lib/protocol
 	url = https://github.com/0xProject/protocol
+[submodule "lib/solmate"]
+	path = lib/solmate
+	url = https://github.com/Rari-Capital/solmate
