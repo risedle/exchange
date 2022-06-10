@@ -84,6 +84,23 @@ contract RisedleExchangeProxyTest is Test {
         rx.register(f.add.selector, address(0));
     }
 
+    /// @notice Make sure can call implementation
+    function testRegisterFunction() public {
+        // Deploy Risedle Exchange Proxy
+        (address owner, , RisedleExchangeProxy rx) = deploy();
+
+        // Deploy dummy feature
+        DummyFeature f = new DummyFeature();
+
+        // Trying to register zero address as implementation
+        hoax(owner, 1 ether);
+        rx.register(f.add.selector, address(f));
+
+        // Call the function as proxy
+        uint256 r = DummyFeature(address(rx)).add(1, 1);
+        assertEq(r, 2);
+    }
+
     /// @notice Make sure it reverts if the caller is not the owner
     function testRegisterBatchRevertIfCallerIsNotOwner() public {
         // Deploy Risedle Exchange Proxy
@@ -129,5 +146,32 @@ contract RisedleExchangeProxyTest is Test {
             )
         );
         rx.register(selectors, implementations);
+    }
+
+    /// @notice Make sure can call implementation
+    function testRegisterBatchFunctions() public {
+        // Deploy Risedle Exchange Proxy
+        (address owner, , RisedleExchangeProxy rx) = deploy();
+
+        // Deploy dummy feature
+        DummyFeature f = new DummyFeature();
+
+        bytes4[] memory selectors = new bytes4[](2);
+        selectors[0] = f.add.selector;
+        selectors[1] = f.sub.selector;
+        address[] memory implementations = new address[](2);
+        implementations[0] = address(f);
+        implementations[1] = address(f);
+
+        // Trying to register zero address as implementation
+        hoax(owner, 1 ether);
+        rx.register(selectors, implementations);
+
+        // Call the function as proxy
+        uint256 a = DummyFeature(address(rx)).add(1, 1);
+        assertEq(a, 2);
+
+        uint256 s = DummyFeature(address(rx)).sub(2, 1);
+        assertEq(s, 1);
     }
 }
