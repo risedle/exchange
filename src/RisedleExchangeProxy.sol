@@ -33,7 +33,7 @@ contract RisedleExchangeProxy is Owned {
     /// ███ Storages █████████████████████████████████████████████████████████
 
     /// @notice Map feature function selector to its implementation
-    map(bytes4 => address) public registry;
+    mapping(bytes4 => address) public registry;
 
     /// @notice WETH address
     WETH public immutable weth;
@@ -42,7 +42,7 @@ contract RisedleExchangeProxy is Owned {
     /// ███ Events ███████████████████████████████████████████████████████████
 
     /// @notice Event emitted when proxy function registered
-    event ProxyFunctionUpdated(bytes4 selector, address previous, address new);
+    event ProxyFunctionUpdated(bytes4 selector, address prev, address now);
 
 
     /// ███ Errors ███████████████████████████████████████████████████████████
@@ -54,7 +54,7 @@ contract RisedleExchangeProxy is Owned {
     error InvalidRegisterInputs();
 
     /// @notice Error raised if function is not implemented
-    error FunctionNotImplemented(bytes4 selector);
+    error FunctionNotImplemented();
 
 
     /// ███ Constructor ██████████████████████████████████████████████████████
@@ -73,16 +73,19 @@ contract RisedleExchangeProxy is Owned {
         if (_impl == address(0)) revert InvalidImplementation();
         address prev = registry[_selector];
         registry[_selector] = _impl;
-        emit ProxyFunctionUpdated(selector, prev, _impl);
+        emit ProxyFunctionUpdated(_selector, prev, _impl);
     }
 
 
-    /// @notice Batch register
+    /// @notice Batch register a functions
     /// @param _selectors The array of function selectors
     /// @param _impls The array of implementation address
-    function register(bytes4[] _selectos, address[] _impls) external {
-        if (_selectors.lenth != _impls.length) revert InvalidRegisterInputs();
-        for (uint256 i = 0; i < _selector.length; i++) {
+    function register(
+        bytes4[] calldata _selectors,
+        address[] calldata _impls
+    ) external {
+        if (_selectors.length != _impls.length) revert InvalidRegisterInputs();
+        for (uint256 i = 0; i < _selectors.length; i++) {
             register(_selectors[i], _impls[i]);
         }
     }
@@ -92,22 +95,15 @@ contract RisedleExchangeProxy is Owned {
 
     /// @notice Forward call to the implementation contract
     fallback() external payable {
-        bytes4 selector = msg.data.readBytes4(0);
+        bytes4 selector = msg.sig;
         address impl = registry[selector];
-        if (impl == address(0)) revert FunctionNotImplemented(selector);
-        (bool success, bytes memory data) = impl.delegateCall(msg.data);
+        if (impl == address(0)) revert FunctionNotImplemented();
+        (bool success, bytes memory data) = impl.delegatecall(msg.data);
         if (!success) {
             assembly { revert(add(data, 32), mload(data)) }
         }
         assembly { return(add(data, 32), mload(data)) }
     }
-
-
-    /// ███ Order settlements  ███████████████████████████████████████████████
-
-    /// @notice
-
-
 
 }
 
